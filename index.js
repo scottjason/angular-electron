@@ -5,16 +5,14 @@ mainWindow = null;
 
 app.on('ready', function() {
 
-  var mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600
-  });
+  var opts = {};
+  
+  var mainWindow = new BrowserWindow(opts);
+  mainWindow.maximize();
 
   mainWindow.loadUrl('file://' + __dirname + '/client/views/index.html');
-  mainWindow.openDevTools();
 
   mainWindow.on('closed', function() {
-    console.log('Window closed');
     mainWindow = null;
   });
 });

@@ -5,8 +5,15 @@ angular.module('app')
 
 function LandingCtrl($scope, $rootScope, $state, $timeout) {
 
-	console.log("LandingCtrl init");
+  var os = require('os');
 
-  
+  console.log(os.platform());
+
+  $scope.fadeInWelcome = true;
+
+
+
+
+
   LandingCtrl.$inject['$scope', '$rootScope', '$state', '$timeout'];
 }
