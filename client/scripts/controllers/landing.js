@@ -12,15 +12,17 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, StateService) {
   var dislikedItems = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/disliked-items');
 
   $scope.customer = {};
+  $scope.product = {};
   $scope.timer = '00:00:00';
 
   function init() {
-   
+
+    console.log('### init');
+
     customerStore.on("child_added", function(snapshot, prevChildKey) {
         var customer = snapshot.val();
         if (customer) {
           $timeout(function() {
-            console.log(customer)
             $scope.customer.name = customer.name;
           });
         }
@@ -41,22 +43,29 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, StateService) {
       });
 
     fittingRoom.on("child_added", function(snapshot) {
-        $scope.product = {};
-        var product = snapshot.val();
-        $scope.product.title = product.title;
-        $scope.product.cost = product.cost;
-        $scope.product.photo = product.photo;
-        console.log('fittingRoom item added', product);
+        $scope.stopTimer = false;
+        setInterval(runTimer, 1000);
+        $timeout(function() {
+          var product = snapshot.val();
+          $scope.product.title = product.title;
+          $scope.product.cost = product.cost;
+          $scope.product.photo = product.photo;
+          console.log('fittingRoom item added', product);
+        });
       },
       function(errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
 
     fittingRoom.on("child_removed", function(snapshot) {
+        $scope.stopTimer = true;
+        $scope.product.isLiked = false;
+        $scope.product.isDisliked = false;
+        $scope.timer = '00:00:00';
         $scope.product.title = "";
         $scope.product.cost = "";
         $scope.product.photo = "";
-        console.log('fittingRoom item removed', product);
+        console.log('fittingRoom item removed');
       },
       function(errorObject) {
         console.log("The read failed: " + errorObject.code);
@@ -64,16 +73,24 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, StateService) {
 
 
     likedItems.on("value", function(snapshot) {
-        var likedItems = snapshot.val();
-        console.log('liked item modified', likedItems)
+        if (snapshot.val()) {
+          $timeout(function() {
+            $scope.product.isLiked = true;
+          });
+        }
+        console.log('liked item modified');
       },
       function(errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
 
     dislikedItems.on("value", function(snapshot) {
-        var dislikedItems = snapshot.val();
-        console.log('disliked item modified', dislikedItems)
+        if (snapshot.val()) {
+          $timeout(function() {
+            $scope.product.isDisliked = true;
+          });
+        }
+        console.log('disliked item modified');
       },
       function(errorObject) {
         console.log("The read failed: " + errorObject.code);
@@ -81,6 +98,29 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, StateService) {
   }
 
   init();
+
+  var totalSeconds = 0;
+
+  function runTimer() {
+    if (!$scope.stopTimer) {
+      ++totalSeconds;
+      var hours = "00";
+      var seconds = padVal(totalSeconds % 60);
+      var minutes = padVal(parseInt(totalSeconds / 60));
+      $timeout(function() {
+        $scope.timer = hours + ":" + minutes + ":" + seconds;
+      });
+    }
+  }
+
+  function padVal(val) {
+    var valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    } else {
+      return valString;
+    }
+  }
 
   LandingCtrl.$inject['$scope', '$rootScope', '$state', '$timeout', 'StateService'];
 }

@@ -8,6 +8,12 @@
   margin-bottom: 10px;
 }
 
+.intro.salmon {
+  color: #b5736d;
+  padding-top: 15px;
+  font-weight: 600;
+}
+
 .salmon {
   color: #80ccd2;
 }
@@ -92,6 +98,7 @@
   color: white;
   font-size: 14px;
 }
+
 .inline-btn p {
   top: 5px;
 }
