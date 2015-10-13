@@ -1,13 +1,12 @@
 <div class="navbar">
-  <div class="navbar-tab-container">
-    <div class="navbar-tab"></div>
-    <div class="navbar-tab"></div>
-    <div class="navbar-tab"></div>
-    <div class="navbar-tab"></div>
-  <div class="navbar-divider"></div>
-  </div>
-  
 </div>
-
-<div class="container">
+<div class='container'>
+  <div ng-repeat='product in products' class="product">
+    <img ng-src="{{product.photo}}" />
+    <p class="product-title">{{product.title}}</p>
+    <p class="product-cost">{{product.cost}}</p>
+    <div class="cart-btn">
+      <p ng-click='tryOn(product)'>try on</p>
+    </div>
+  </div>
 </div>

@@ -1,13 +1,9 @@
-/*
-	Background Blue: #353e46;
-	Salmon: #b5736d;
-	Green: #4c6b72;
-	Bright Blue: #80ccd5;
-*/
-
-html,
 body {
-  background: #353e46;
+  background: black;
+  overflow-x: hidden;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 * {
@@ -15,16 +11,14 @@ body {
   padding: 0;
 }
 
-.container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 50%;
-  height: 50%;
-  min-width: 320px;
-  min-height: 320px;
-  margin: auto;
-  /*background: green;*/
+input {
+  outline: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: none;
 }

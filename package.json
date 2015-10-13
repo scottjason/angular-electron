@@ -10,7 +10,10 @@
   "author": "Scott Jason",
   "license": "ISC",
   "dependencies": {
-    "electron": "^0.4.1"
+    "electron": "^0.4.1",
+    "express": "^4.13.3",
+    "firebase": "^2.3.1",
+    "request": "^2.65.0"
   },
   "devDependencies": {
     "electron-prebuilt": "^0.33.6"
