@@ -1,12 +1,14 @@
-<div class="navbar">
-</div>
-<div class='container'>
-  <div ng-repeat='product in products' class="product">
-    <img ng-src="{{product.photo}}" />
-    <p class="product-title">{{product.title}}</p>
-    <p class="product-cost">{{product.cost}}</p>
-    <div class="cart-btn">
-      <p ng-click='tryOn(product)'>try on</p>
-    </div>
-  </div>
+<div class="welcome">
+  <p class="intro first">{{ timer }}</p>
+  <div class="divider"></div>
+  	<p ng-show='customer.name' class="intro first"><span class='salmon'>New Customer:&nbsp;&nbsp;</span>{{ customer.name }}</p>
+    <p  ng-show='product.title' class="intro"><span class='salmon'>Location:&nbsp;&nbsp;</span> Fitting Room 1</p>
+    <p  ng-show='product.title' class="intro"><span class='salmon'>Item:&nbsp;&nbsp;</span> {{product.title}}</p>
+  <!-- <p class="intro orange">want, don't want, and need another size</p> -->
+  <!-- <div class="divider"></div> -->
+  <!-- <p class="intro last">your retail associate is  in real-time</p> -->
+  <!-- <input class="name" ng-model='customer.name' placeholder='enter your name'> -->
+  <!-- <button class='btn' ng-click='setName()'> -->
+    <!-- <p>Submit</p> -->
+  <!-- </button> -->
 </div>

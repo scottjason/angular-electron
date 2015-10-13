@@ -1,4 +1,47 @@
-.container {
+/*salmon  b5736d*/
+
+.intro {
+  color: white;
+  position: relative;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.salmon {
+  color: #80ccd2;
+}
+
+.divider {
+  position: absolute;
+  border: transparent;
+  border-bottom: 1px solid #80ccd2;
+  width: 400px;
+  margin: auto;
+  margin-bottom: 5px;
+  left: 0;
+  right: 0;
+}
+
+.divider.tryon {
+  top: 10px;
+}
+
+.intro.first {
+  padding-top: 10px;
+}
+
+.intro.third {
+  color: #80ccd2;
+}
+
+.intro.last {
+  margin-bottom: 50px;
+  padding-top: 10px;
+}
+
+.container,
+.welcome {
   position: absolute;
   left: 0;
   right: 0;
@@ -9,6 +52,61 @@
   height: 100%;
   background: black;
   text-align: center;
+}
+
+.welcome {
+  top: 0;
+  height: 370px;
+  width: 450px;
+}
+
+.btn {
+  width: 200px;
+  height: 40px;
+  border-radius: 30px;
+  margin-top: 30px;
+  background-color: transparent;
+  border: 1px solid white;
+  outline: 0;
+  cursor: pointer;
+  border: 1px solid #80ccd2;
+}
+
+.inline-btn {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 30px;
+  border-radius: 30px;
+  margin-top: 30px;
+  background-color: transparent;
+  border: 1px solid white;
+  outline: 0;
+  cursor: pointer;
+  border: 1px solid #80ccd2;
+}
+
+.btn p,
+.inline-btn p {
+  position: relative;
+  color: white;
+  font-size: 14px;
+}
+.inline-btn p {
+  top: 5px;
+}
+
+input {
+  position: relative;
+  display: block;
+  margin: auto;
+  height: 30px;
+  width: 250px;
+  border: transparent;
+  border-bottom: 1px solid white;
+  background: black;
+  color: white;
+  font-size: 14px;
 }
 
 .product {
@@ -35,7 +133,8 @@
   position: absolute;
   width: 170px;
   height: 30px;
-  background: white;
+  background: transparent;
+  border: 1px solid #80ccd2;
   border-radius: 30px;
   text-align: center;
   margin: auto;
@@ -46,8 +145,41 @@
 }
 
 .cart-btn p {
-  color: rgba(0, 0, 0, .7);
+  color: white;
   font-size: 14px;
   position: relative;
   top: 4px;
+}
+
+.tryon-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 400px;
+  height: 340px;
+  background: transparent;
+  margin: auto;
+  text-align: center;
+  font-size: 12px;
+  border: 1px solid white;
+}
+
+.tryon-container p {
+  color: black;
+  position: relative;
+}
+
+.tryon {
+  position: relative;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 10px;
+  color: #80ccd2;
+}
+
+.tryon span {
+  color: white;
+  font-size: 14px;
 }
