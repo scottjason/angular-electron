@@ -1,6 +1,4 @@
-/*salmon  b5736d*/
-
-.intro {
+.copy {
   color: white;
   position: relative;
   font-size: 14px;
@@ -8,40 +6,29 @@
   margin-bottom: 10px;
 }
 
-.intro.salmon {
+.copy.salmon {
   color: #b5736d;
   padding-top: 15px;
   font-weight: 600;
 }
 
-.salmon {
+.copy.blue {
+  cursor: pointer;
+}
+
+.blue {
   color: #80ccd2;
 }
 
-.divider {
-  position: absolute;
-  border: transparent;
-  border-bottom: 1px solid #80ccd2;
-  width: 400px;
-  margin: auto;
-  margin-bottom: 5px;
-  left: 0;
-  right: 0;
-}
-
-.divider.tryon {
-  top: 10px;
-}
-
-.intro.first {
+.copy.first {
   padding-top: 10px;
 }
 
-.intro.third {
+.copy.third {
   color: #80ccd2;
 }
 
-.intro.last {
+.copy.last {
   margin-bottom: 50px;
   padding-top: 10px;
 }
@@ -189,4 +176,19 @@ input {
 .tryon span {
   color: white;
   font-size: 14px;
+}
+
+.divider {
+  position: absolute;
+  border: transparent;
+  border-bottom: 1px solid #80ccd2;
+  width: 400px;
+  margin: auto;
+  margin-bottom: 5px;
+  left: 0;
+  right: 0;
+}
+
+.divider.tryon {
+  top: 10px;
 }

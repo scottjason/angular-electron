@@ -3,13 +3,16 @@
 angular.module('app')
   .controller('LandingCtrl', LandingCtrl);
 
-function LandingCtrl($scope, $rootScope, $state, $timeout, StateService) {
+function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, StateService) {
 
   var Firebase = require('firebase');
+  var allProducts = new Firebase('https://retail-store-app.firebaseio.com/products');
+  allProducts = $firebaseArray(allProducts);
   var fittingRoom = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/products');
   var customerStore = new Firebase('https://retail-store-app.firebaseio.com/customers');
   var likedItems = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/liked-items');
   var dislikedItems = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/disliked-items');
+  var recommendations = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/recommendations');
 
   $scope.customer = {};
   $scope.product = {};
@@ -99,6 +102,25 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, StateService) {
 
   init();
 
+  $scope.sendRecommendation = function(selectedProduct) {
+
+    var targetTitle = selectedProduct.title;
+    var targetPrice = parseInt(selectedProduct.cost.split('$')[1]);
+
+    for (var i = 0; i < allProducts.length; i++) {
+
+      var incomingPrice = parseInt(selectedProduct.cost.split('$')[1]);
+      var diffInPrice = (targetPrice - incomingPrice);
+      diffInPrice = (diffInPrice > 0) ? diffInPrice : (diffInPrice * -1);
+
+      if (diffInPrice <= 20 && targetTitle !== allProducts[i].title) {
+        console.log('found recommendation', allProducts[i]);
+        recommendations.push(allProducts[i]);
+        break;
+      }
+    }
+  }
+
   var totalSeconds = 0;
 
   function runTimer() {
@@ -122,5 +144,9 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, StateService) {
     }
   }
 
-  LandingCtrl.$inject['$scope', '$rootScope', '$state', '$timeout', 'StateService'];
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  LandingCtrl.$inject['$scope', '$rootScope', '$state', '$timeout', '$firebaseArray', 'StateService'];
 }
