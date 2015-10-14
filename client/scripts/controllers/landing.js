@@ -18,6 +18,9 @@ function LandingCtrl($scope, $timeout, $state, RecommendationService, $firebaseA
   var likedItems = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/liked-items');
   var dislikedItems = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/disliked-items');
 
+  var completed = new Firebase('https://retail-store-app.firebaseio.com/completed');
+
+
   $scope.customer = {};
   $scope.product = {};
 
@@ -94,6 +97,18 @@ function LandingCtrl($scope, $timeout, $state, RecommendationService, $firebaseA
       function(errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
+
+
+    completed.on("child_added", function(snapshot) {
+      console.log('completed called');
+        $timeout(function() {
+          $scope.showComplete = true;
+        });
+
+      },
+      function(errorObject) {
+        console.log("The read failed: " + errorObject.code);
+      });
   }
 
   bindListeners();
@@ -106,9 +121,6 @@ function LandingCtrl($scope, $timeout, $state, RecommendationService, $firebaseA
         } else {
           console.log('Recommendation sent, price-Based');
         }
-        $timeout(function() {
-          $scope.showComplete = true;
-        });
       }
     });
   };
