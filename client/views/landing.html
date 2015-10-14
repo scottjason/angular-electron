@@ -1,17 +1,18 @@
 <div class="welcome">
   <!-- <p class="copy first">{{ timer }}</p> -->
-  <div class="divider"></div>
-  	<p ng-show='customer.name' class="copy first"><span class='blue'>New Customer:&nbsp;&nbsp;</span>{{ customer.name }}</p>
-    <p  ng-show='product.title' class="copy"><span class='blue'>Location:&nbsp;&nbsp;</span> Fitting Room 1</p>
-    <p  ng-show='product.title' class="copy"><span class='blue'>Item:&nbsp;&nbsp;</span> {{product.title}}</p>
-  <div class="divider"></div>
-
-  <p ng-show='product.isLiked' class="copy salmon">{{customer.name}} likes this item</p>
-  <p ng-show='product.isDisliked' class="copy salmon">{{customer.name}} does not like this item</p>
-  <p ng-click='sendRecommendation(product);' ng-show='product.isDisliked' class="copy blue">send recommendation</p>
-  <!-- <p class="intro last">your retail associate is  in real-time</p> -->
-  <!-- <input class="name" ng-model='customer.name' placeholder='enter your name'> -->
-  <!-- <button class='btn' ng-click='setName()'> -->
-    <!-- <p>Submit</p> -->
-  <!-- </button> -->
+  <div ng-hide='showComplete'>
+    <div class="divider"></div>
+    <p ng-show='customer.name' class="copy first"><span class='blue'>New Customer:&nbsp;&nbsp;</span>{{ customer.name }}</p>
+    <p ng-show='product.title' class="copy"><span class='blue'>Location:&nbsp;&nbsp;</span> Fitting Room 1</p>
+    <p ng-show='product.title' class="copy"><span class='blue'>Item:&nbsp;&nbsp;</span> {{product.title}}</p>
+    <div class="divider"></div>
+    <p ng-show='product.isLiked' class="copy salmon">{{customer.name}} likes this item</p>
+    <p ng-show='product.isDisliked' class="copy salmon">{{customer.name}} does not like this item</p>
+    <p ng-click='sendRecommendation(product);' ng-show='product.isDisliked' class="copy blue">send recommendation</p>
+  </div>
+  <div ng-show='showComplete' class="on-complete">
+    <button class='btn' ng-click='reset()'>
+      <p>Go again</p>
+    </button>
+  </div>
 </div>

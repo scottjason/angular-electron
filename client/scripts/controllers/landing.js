@@ -3,7 +3,7 @@
 angular.module('app')
   .controller('LandingCtrl', LandingCtrl);
 
-function LandingCtrl($scope, $timeout, RecommendationService, $firebaseArray) {
+function LandingCtrl($scope, $timeout, $state, RecommendationService, $firebaseArray) {
 
   var Firebase = require('firebase');
   var fittingRoom = {};
@@ -106,10 +106,18 @@ function LandingCtrl($scope, $timeout, RecommendationService, $firebaseArray) {
         } else {
           console.log('Recommendation sent, price-Based');
         }
+        $timeout(function() {
+          $scope.showComplete = true;
+        });
       }
     });
   };
 
+  $scope.reset = function() {
+    $state.go($state.current, {}, {
+      reload: true
+    });
+  };
 
-  LandingCtrl.$inject['$scope', '$timeout', 'RecommendationService', '$firebaseArray'];
+  LandingCtrl.$inject['$scope', '$timeout', '$state', 'RecommendationService', '$firebaseArray'];
 }
