@@ -3,23 +3,25 @@
 angular.module('app')
   .controller('LandingCtrl', LandingCtrl);
 
-function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, StateService) {
+function LandingCtrl($scope, $timeout, RecommendationService, $firebaseArray) {
 
   var Firebase = require('firebase');
+  var fittingRoom = {};
+
   var allProducts = new Firebase('https://retail-store-app.firebaseio.com/products');
   allProducts = $firebaseArray(allProducts);
-  var fittingRoom = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/products');
+
+  fittingRoom.products = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/products');
+  fittingRoom.recommendations = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/recommendations');
+
   var customerStore = new Firebase('https://retail-store-app.firebaseio.com/customers');
   var likedItems = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/liked-items');
   var dislikedItems = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/disliked-items');
-  var recommendations = new Firebase('https://retail-store-app.firebaseio.com/fitting-room/recommendations');
 
   $scope.customer = {};
   $scope.product = {};
 
-  function init() {
-
-    console.log('### init');
+  var bindListeners = function() {
 
     customerStore.on("child_added", function(snapshot, prevChildKey) {
         var customer = snapshot.val();
@@ -44,26 +46,26 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
         console.log("The read failed: " + errorObject.code);
       });
 
-    fittingRoom.on("child_added", function(snapshot) {
+    fittingRoom.products.on("child_added", function(snapshot) {
         $timeout(function() {
           var product = snapshot.val();
           $scope.product.title = product.title;
           $scope.product.cost = product.cost;
           $scope.product.photo = product.photo;
-          console.log('fittingRoom item added', product);
+          console.log('fittingRoom products.item added', product);
         });
       },
       function(errorObject) {
         console.log("The read failed: " + errorObject.code);
       });
 
-    fittingRoom.on("child_removed", function(snapshot) {
+    fittingRoom.products.on("child_removed", function(snapshot) {
         $scope.product.isLiked = false;
         $scope.product.isDisliked = false;
         $scope.product.title = "";
         $scope.product.cost = "";
         $scope.product.photo = "";
-        console.log('fittingRoom item removed');
+        console.log('fittingRoom products.item removed');
       },
       function(errorObject) {
         console.log("The read failed: " + errorObject.code);
@@ -94,68 +96,20 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
       });
   }
 
-  init();
+  bindListeners();
 
   $scope.sendRecommendation = function(selectedProduct) {
-
-    var foundMatch = false;
-    var bestMatch = {}
-    var highestScore = 0;
-
-    var targetTitle = selectedProduct.title;
-    var targetPrice = parseInt(selectedProduct.cost.split('$')[1]);
-
-    var ref = new Firebase('https://retail-store-app.firebaseio.com/recommendations');
-
-    // first see if there's already an association, if not send the recommendation based on price, plus or minus $20 range
-    ref.once("value", function(snapshot) {
-        var obj = snapshot.val();
-        angular.forEach(obj, function(incoming, key) {
-
-          console.log(incoming.firstShownName, targetTitle);
-
-          var isMatch = (targetTitle === incoming.firstShownName);
-          var isHighestScore = (incoming.score >= highestScore);
-
-          if (isMatch && isHighestScore) {
-            foundMatch = true;
-            bestMatch.title = incoming.recommendedName;
-            highestScore = incoming.score;
-          }
-        });
-
-        if (foundMatch) {
-          console.log('foundMatch', bestMatch);
-          bestMatch.firstShown = {};
-          bestMatch.firstShown.title = targetTitle;
-          recommendations.push(bestMatch);
-          console.log('found a previously associated recommendation', bestMatch);
-
+    RecommendationService.send(selectedProduct, fittingRoom, allProducts, function(isSent, isPriceBased) {
+      if (isSent) {
+        if (!isPriceBased) {
+          console.log('Recommendation sent, previous association');
         } else {
-
-          for (var i = 0; i < allProducts.length; i++) {
-
-            var incomingPrice = parseInt(selectedProduct.cost.split('$')[1]);
-            var diffInPrice = (targetPrice - incomingPrice);
-            diffInPrice = (diffInPrice > 0) ? diffInPrice : (diffInPrice * -1);
-
-            if (diffInPrice <= 20 && targetTitle !== allProducts[i].title) {
-              console.log('found price-based recommendation', allProducts[i]);
-              delete allProducts[i].$id;
-              delete allProducts[i].$priority;
-              allProducts[i].firstShown = {};
-              allProducts[i].firstShown.title = targetTitle;
-              recommendations.push(allProducts[i]);
-              break;
-            }
-          }
+          console.log('Recommendation sent, price-Based');
         }
-      },
-      function(errorObject) {
-        console.log("The read failed: " + errorObject.code);
-      });
+      }
+    });
   };
 
 
-  LandingCtrl.$inject['$scope', '$rootScope', '$state', '$timeout', '$firebaseArray', 'StateService'];
+  LandingCtrl.$inject['$scope', '$timeout', 'RecommendationService', '$firebaseArray'];
 }
