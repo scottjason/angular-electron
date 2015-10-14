@@ -74,7 +74,6 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
         console.log("The read failed: " + errorObject.code);
       });
 
-
     likedItems.on("value", function(snapshot) {
         if (snapshot.val()) {
           $timeout(function() {
@@ -115,6 +114,10 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
 
       if (diffInPrice <= 20 && targetTitle !== allProducts[i].title) {
         console.log('found recommendation', allProducts[i]);
+        delete allProducts[i].$id;
+        delete allProducts[i].$priority;
+        allProducts[i].firstShown = {};
+        allProducts[i].firstShown.title = targetTitle;
         recommendations.push(allProducts[i]);
         break;
       }
