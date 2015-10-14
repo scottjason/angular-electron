@@ -16,7 +16,6 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
 
   $scope.customer = {};
   $scope.product = {};
-  $scope.timer = '00:00:00';
 
   function init() {
 
@@ -46,8 +45,6 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
       });
 
     fittingRoom.on("child_added", function(snapshot) {
-        $scope.stopTimer = false;
-        setInterval(runTimer, 1000);
         $timeout(function() {
           var product = snapshot.val();
           $scope.product.title = product.title;
@@ -61,10 +58,8 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
       });
 
     fittingRoom.on("child_removed", function(snapshot) {
-        $scope.stopTimer = true;
         $scope.product.isLiked = false;
         $scope.product.isDisliked = false;
-        $scope.timer = '00:00:00';
         $scope.product.title = "";
         $scope.product.cost = "";
         $scope.product.photo = "";
@@ -103,53 +98,64 @@ function LandingCtrl($scope, $rootScope, $state, $timeout, $firebaseArray, State
 
   $scope.sendRecommendation = function(selectedProduct) {
 
+    var foundMatch = false;
+    var bestMatch = {}
+    var highestScore = 0;
+
     var targetTitle = selectedProduct.title;
     var targetPrice = parseInt(selectedProduct.cost.split('$')[1]);
 
-    for (var i = 0; i < allProducts.length; i++) {
+    var ref = new Firebase('https://retail-store-app.firebaseio.com/recommendations');
 
-      var incomingPrice = parseInt(selectedProduct.cost.split('$')[1]);
-      var diffInPrice = (targetPrice - incomingPrice);
-      diffInPrice = (diffInPrice > 0) ? diffInPrice : (diffInPrice * -1);
+    // first see if there's already an association, if not send the recommendation based on price, plus or minus $20 range
+    ref.once("value", function(snapshot) {
+        var obj = snapshot.val();
+        angular.forEach(obj, function(incoming, key) {
 
-      if (diffInPrice <= 20 && targetTitle !== allProducts[i].title) {
-        console.log('found recommendation', allProducts[i]);
-        delete allProducts[i].$id;
-        delete allProducts[i].$priority;
-        allProducts[i].firstShown = {};
-        allProducts[i].firstShown.title = targetTitle;
-        recommendations.push(allProducts[i]);
-        break;
-      }
-    }
-  }
+          console.log(incoming.firstShownName, targetTitle);
 
-  var totalSeconds = 0;
+          var isMatch = (targetTitle === incoming.firstShownName);
+          var isHighestScore = (incoming.score >= highestScore);
 
-  function runTimer() {
-    if (!$scope.stopTimer) {
-      ++totalSeconds;
-      var hours = "00";
-      var seconds = padVal(totalSeconds % 60);
-      var minutes = padVal(parseInt(totalSeconds / 60));
-      $timeout(function() {
-        $scope.timer = hours + ":" + minutes + ":" + seconds;
+          if (isMatch && isHighestScore) {
+            foundMatch = true;
+            bestMatch.title = incoming.recommendedName;
+            highestScore = incoming.score;
+          }
+        });
+
+        if (foundMatch) {
+          console.log('foundMatch', bestMatch);
+          bestMatch.firstShown = {};
+          bestMatch.firstShown.title = targetTitle;
+          recommendations.push(bestMatch);
+          console.log('found a previously associated recommendation', bestMatch);
+
+        } else {
+
+          for (var i = 0; i < allProducts.length; i++) {
+
+            var incomingPrice = parseInt(selectedProduct.cost.split('$')[1]);
+            var diffInPrice = (targetPrice - incomingPrice);
+            diffInPrice = (diffInPrice > 0) ? diffInPrice : (diffInPrice * -1);
+
+            if (diffInPrice <= 20 && targetTitle !== allProducts[i].title) {
+              console.log('found price-based recommendation', allProducts[i]);
+              delete allProducts[i].$id;
+              delete allProducts[i].$priority;
+              allProducts[i].firstShown = {};
+              allProducts[i].firstShown.title = targetTitle;
+              recommendations.push(allProducts[i]);
+              break;
+            }
+          }
+        }
+      },
+      function(errorObject) {
+        console.log("The read failed: " + errorObject.code);
       });
-    }
-  }
+  };
 
-  function padVal(val) {
-    var valString = val + "";
-    if (valString.length < 2) {
-      return "0" + valString;
-    } else {
-      return valString;
-    }
-  }
-
-  function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
   LandingCtrl.$inject['$scope', '$rootScope', '$state', '$timeout', '$firebaseArray', 'StateService'];
 }
